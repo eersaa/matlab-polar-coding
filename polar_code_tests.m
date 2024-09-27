@@ -18,7 +18,11 @@ classdef polar_code_tests < matlab.unittest.TestCase
     end
     methods(Test)
         function should_produce_same_output_with_reference(self)
-            encoded_message = self.message;
+            message_with_frozen_bits = self.PCparams.FZlookup;
+            message_with_frozen_bits(self.PCparams.FZlookup == -1) = self.message;
+
+            encoded_message = logical(pencode_core(message_with_frozen_bits, self.PCparams.n));
+
             self.verifyEqual(encoded_message, self.ref_encoded_message)
         end
     end
@@ -29,12 +33,13 @@ classdef polar_code_tests < matlab.unittest.TestCase
             K_message_length = 64;
             Ec_BPSK_symbol_energy = 1;
             N0_noise = 2;
-
+            global PCparams;
             initPC(N_block_length, ...
                     K_message_length, ...
                     Ec_BPSK_symbol_energy, ...
                     N0_noise)
             
+            self.PCparams = PCparams;
             self.message = (rand(K_message_length,1)>0.5);
             self.ref_encoded_message = logical(pencode(self.message));
         end
