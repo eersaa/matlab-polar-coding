@@ -11,16 +11,17 @@ classdef polar_code_tests < matlab.unittest.TestCase
             close all;
 
             self.compute_reference_output;
-            self.write_data_to_file(self.message, 'input.txt');
             self.write_data_to_file(self.ref_encoded_message, 'reference_output.txt');
-
+            
         end
     end
     methods(Test)
         function should_produce_same_output_with_reference(self)
             message_with_frozen_bits = self.PCparams.FZlookup;
             message_with_frozen_bits(self.PCparams.FZlookup == -1) = self.message;
-
+            
+            self.write_data_to_file(message_with_frozen_bits, 'input.txt');
+            
             encoded_message = logical(pencode_core(message_with_frozen_bits, self.PCparams.n));
 
             self.verifyEqual(encoded_message, self.ref_encoded_message)
