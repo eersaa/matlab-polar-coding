@@ -3,6 +3,7 @@ classdef polar_code_tests < matlab.unittest.TestCase
         message
         ref_encoded_message
         PCparams
+        message_with_frozen_bits
     end
     properties (SetAccess = public)
     end
@@ -12,19 +13,23 @@ classdef polar_code_tests < matlab.unittest.TestCase
 
             self.compute_reference_output;
             self.write_data_to_file(self.ref_encoded_message, 'reference_output.txt');
-            
+            self.message_with_frozen_bits = self.PCparams.FZlookup;
+            self.message_with_frozen_bits(self.PCparams.FZlookup == -1) = self.message;
+            self.write_data_to_file(self.message_with_frozen_bits, 'input.txt');
         end
     end
     methods(Test)
         function should_produce_same_output_with_reference(self)
-            message_with_frozen_bits = self.PCparams.FZlookup;
-            message_with_frozen_bits(self.PCparams.FZlookup == -1) = self.message;
-            
-            self.write_data_to_file(message_with_frozen_bits, 'input.txt');
-            
-            encoded_message = logical(pencode_core(message_with_frozen_bits, self.PCparams.n));
+            encoded_message = logical(pencode_core(self.message_with_frozen_bits, self.PCparams.n));
 
             self.verifyEqual(encoded_message, self.ref_encoded_message)
+        end
+
+        function cpp_should_produce_same_output_with_reference(self)
+            encoded_message = zeros(self.PCparams.N, 1);
+            encoded_message = mfun_pencodecorerun(self.message_with_frozen_bits, encoded_message);
+
+            self.verifyEqual(logical(encoded_message)', self.ref_encoded_message)
         end
     end
     methods
