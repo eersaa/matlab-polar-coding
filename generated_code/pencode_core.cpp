@@ -5,104 +5,120 @@
 // File: pencode_core.cpp
 //
 // MATLAB Coder version            : 24.1
-// C/C++ source code generated on  : 14-Oct-2024 17:08:46
+// C/C++ source code generated on  : 14-Oct-2024 17:18:48
 //
 
 // Include Files
 #include "pencode_core.h"
-#include "rt_nonfinite.h"
 #include <algorithm>
 #include <cmath>
 
-// Function Declarations
-static double rt_powd_snf(double u0, double u1);
-
 // Function Definitions
 //
-// Arguments    : double u0
-//                double u1
-// Return Type  : double
-//
-static double rt_powd_snf(double u0, double u1)
-{
-  double y;
-  if (std::isnan(u0) || std::isnan(u1)) {
-    y = rtNaN;
-  } else {
-    double d;
-    double d1;
-    d = std::abs(u0);
-    d1 = std::abs(u1);
-    if (std::isinf(u1)) {
-      if (d == 1.0) {
-        y = 1.0;
-      } else if (d > 1.0) {
-        if (u1 > 0.0) {
-          y = rtInf;
-        } else {
-          y = 0.0;
-        }
-      } else if (u1 > 0.0) {
-        y = 0.0;
-      } else {
-        y = rtInf;
-      }
-    } else if (d1 == 0.0) {
-      y = 1.0;
-    } else if (d1 == 1.0) {
-      if (u1 > 0.0) {
-        y = u0;
-      } else {
-        y = 1.0 / u0;
-      }
-    } else if (u1 == 2.0) {
-      y = u0 * u0;
-    } else if ((u1 == 0.5) && (u0 >= 0.0)) {
-      y = std::sqrt(u0);
-    } else if ((u0 < 0.0) && (u1 > std::floor(u1))) {
-      y = rtNaN;
-    } else {
-      y = std::pow(u0, u1);
-    }
-  }
-  return y;
-}
-
-//
 // Arguments    : const boolean_T d[128]
-//                double n
+//                int n
 //                boolean_T x[128]
 // Return Type  : void
 //
-void pencode_core(const boolean_T d[128], double n, boolean_T x[128])
+void pencode_core(const boolean_T d[128], int n, boolean_T x[128])
 {
-  int i;
+  int c_qY;
   std::copy(&d[0], &d[128], &x[0]);
-  i = static_cast<int>(n);
-  for (int b_i{0}; b_i < i; b_i++) {
-    double B;
-    int i1;
-    B = rt_powd_snf(2.0, (n - (static_cast<double>(b_i) + 1.0)) + 1.0);
-    i1 = static_cast<int>(
-        rt_powd_snf(2.0, (static_cast<double>(b_i) + 1.0) - 1.0));
-    for (int j{0}; j < i1; j++) {
-      double base;
-      int i2;
-      base = ((static_cast<double>(j) + 1.0) - 1.0) * B;
-      i2 = static_cast<int>(B / 2.0);
-      for (int l{0}; l < i2; l++) {
-        int b_x;
-        int x_tmp;
-        x_tmp = static_cast<int>(base + (static_cast<double>(l) + 1.0)) - 1;
-        b_x = x[x_tmp] + x[static_cast<int>((base + B / 2.0) +
-                                            (static_cast<double>(l) + 1.0)) -
-                           1];
-        if (b_x == 0) {
-          b_x = 0;
+  for (int i{0}; i < n; i++) {
+    int B;
+    int b_qY;
+    int nB;
+    int q1;
+    int qY;
+    if ((n >= 0) && (i + 1 < n - MAX_int32_T)) {
+      qY = MAX_int32_T;
+    } else if ((n < 0) && (i + 1 > n - MIN_int32_T)) {
+      qY = MIN_int32_T;
+    } else {
+      qY = (n - i) - 1;
+    }
+    if (qY > 2147483646) {
+      qY = MAX_int32_T;
+    } else {
+      qY++;
+    }
+    b_qY = qY;
+    if (qY < 0) {
+      b_qY = 0;
+    }
+    if (qY > 30) {
+      B = MAX_int32_T;
+    } else {
+      B = static_cast<int>(1U << static_cast<unsigned int>(b_qY));
+    }
+    if (i + 1 < -2147483647) {
+      qY = MIN_int32_T;
+    } else {
+      qY = i;
+    }
+    b_qY = qY;
+    if (qY < 0) {
+      b_qY = 0;
+    }
+    if (qY > 30) {
+      nB = MAX_int32_T;
+    } else {
+      nB = static_cast<int>(1U << static_cast<unsigned int>(b_qY));
+    }
+    q1 = static_cast<int>(std::round(static_cast<double>(B) / 2.0));
+    for (int j{0}; j < nB; j++) {
+      long b_i;
+      b_i = static_cast<long>(j) * B;
+      if (b_i > 2147483647L) {
+        b_i = 2147483647L;
+      } else if (b_i < -2147483648L) {
+        b_i = -2147483648L;
+      }
+      if (q1 - 1 >= 0) {
+        if ((static_cast<int>(b_i) < 0) &&
+            (q1 < MIN_int32_T - static_cast<int>(b_i))) {
+          c_qY = MIN_int32_T;
+        } else if ((static_cast<int>(b_i) > 0) &&
+                   (q1 > MAX_int32_T - static_cast<int>(b_i))) {
+          c_qY = MAX_int32_T;
         } else {
-          b_x = static_cast<int>(std::fmod(static_cast<double>(b_x), 2.0));
+          c_qY = static_cast<int>(b_i) + q1;
         }
-        x[x_tmp] = (b_x != 0.0);
+      }
+      for (int l{0}; l < q1; l++) {
+        boolean_T b;
+        b = ((static_cast<int>(b_i) < 0) &&
+             (l + 1 < MIN_int32_T - static_cast<int>(b_i)));
+        if (b) {
+          qY = MIN_int32_T;
+        } else if ((static_cast<int>(b_i) > 0) &&
+                   (l + 1 > MAX_int32_T - static_cast<int>(b_i))) {
+          qY = MAX_int32_T;
+        } else {
+          qY = (static_cast<int>(b_i) + l) + 1;
+        }
+        if ((c_qY < 0) && (l + 1 < MIN_int32_T - c_qY)) {
+          b_qY = MIN_int32_T;
+        } else if ((c_qY > 0) && (l + 1 > MAX_int32_T - c_qY)) {
+          b_qY = MAX_int32_T;
+        } else {
+          b_qY = (c_qY + l) + 1;
+        }
+        b_qY = x[qY - 1] + x[b_qY - 1];
+        if (b) {
+          qY = MIN_int32_T;
+        } else if ((static_cast<int>(b_i) > 0) &&
+                   (l + 1 > MAX_int32_T - static_cast<int>(b_i))) {
+          qY = MAX_int32_T;
+        } else {
+          qY = (static_cast<int>(b_i) + l) + 1;
+        }
+        if (b_qY == 0) {
+          b_qY = 0;
+        } else {
+          b_qY = static_cast<int>(std::fmod(static_cast<double>(b_qY), 2.0));
+        }
+        x[qY - 1] = (b_qY != 0.0);
       }
     }
   }
