@@ -5,7 +5,7 @@
 // File: pencode_core.cpp
 //
 // MATLAB Coder version            : 24.1
-// C/C++ source code generated on  : 14-Oct-2024 16:52:15
+// C/C++ source code generated on  : 14-Oct-2024 17:08:46
 //
 
 // Include Files
@@ -69,12 +69,12 @@ static double rt_powd_snf(double u0, double u1)
 }
 
 //
-// Arguments    : const double d[128]
+// Arguments    : const boolean_T d[128]
 //                double n
-//                double x[128]
+//                boolean_T x[128]
 // Return Type  : void
 //
-void pencode_core(const double d[128], double n, double x[128])
+void pencode_core(const boolean_T d[128], double n, boolean_T x[128])
 {
   int i;
   std::copy(&d[0], &d[128], &x[0]);
@@ -91,26 +91,18 @@ void pencode_core(const double d[128], double n, double x[128])
       base = ((static_cast<double>(j) + 1.0) - 1.0) * B;
       i2 = static_cast<int>(B / 2.0);
       for (int l{0}; l < i2; l++) {
-        double b_x;
-        double r;
+        int b_x;
         int x_tmp;
         x_tmp = static_cast<int>(base + (static_cast<double>(l) + 1.0)) - 1;
         b_x = x[x_tmp] + x[static_cast<int>((base + B / 2.0) +
                                             (static_cast<double>(l) + 1.0)) -
                            1];
-        if (std::isnan(b_x) || std::isinf(b_x)) {
-          r = rtNaN;
-        } else if (b_x == 0.0) {
-          r = 0.0;
+        if (b_x == 0) {
+          b_x = 0;
         } else {
-          r = std::fmod(b_x, 2.0);
-          if (r == 0.0) {
-            r = 0.0;
-          } else if (b_x < 0.0) {
-            r += 2.0;
-          }
+          b_x = static_cast<int>(std::fmod(static_cast<double>(b_x), 2.0));
         }
-        x[x_tmp] = r;
+        x[x_tmp] = (b_x != 0.0);
       }
     }
   }
