@@ -5,7 +5,7 @@
 // File: pencode_core.cpp
 //
 // MATLAB Coder version            : 24.1
-// C/C++ source code generated on  : 14-Oct-2024 17:18:48
+// C/C++ source code generated on  : 15-Oct-2024 09:53:02
 //
 
 // Include Files
@@ -16,109 +16,72 @@
 // Function Definitions
 //
 // Arguments    : const boolean_T d[128]
-//                int n
+//                unsigned int n
 //                boolean_T x[128]
 // Return Type  : void
 //
-void pencode_core(const boolean_T d[128], int n, boolean_T x[128])
+void pencode_core(const boolean_T d[128], unsigned int n, boolean_T x[128])
 {
-  int c_qY;
+  int i;
   std::copy(&d[0], &d[128], &x[0]);
-  for (int i{0}; i < n; i++) {
-    int B;
-    int b_qY;
-    int nB;
-    int q1;
-    int qY;
-    if ((n >= 0) && (i + 1 < n - MAX_int32_T)) {
-      qY = MAX_int32_T;
-    } else if ((n < 0) && (i + 1 > n - MIN_int32_T)) {
-      qY = MIN_int32_T;
+  i = static_cast<int>(n);
+  for (int b_i{0}; b_i < i; b_i++) {
+    unsigned int B;
+    int i1;
+    unsigned int qY;
+    qY = (n - static_cast<unsigned int>(b_i)) - 1U;
+    if (qY > n) {
+      qY = 0U;
+    }
+    if (qY + 1U > 31U) {
+      B = MAX_uint32_T;
     } else {
-      qY = (n - i) - 1;
+      B = 1U << (qY + 1U);
     }
-    if (qY > 2147483646) {
-      qY = MAX_int32_T;
+    if (static_cast<unsigned int>(b_i) > 31U) {
+      i1 = -1;
     } else {
-      qY++;
+      i1 = static_cast<int>(1U << static_cast<unsigned int>(b_i));
     }
-    b_qY = qY;
-    if (qY < 0) {
-      b_qY = 0;
-    }
-    if (qY > 30) {
-      B = MAX_int32_T;
-    } else {
-      B = static_cast<int>(1U << static_cast<unsigned int>(b_qY));
-    }
-    if (i + 1 < -2147483647) {
-      qY = MIN_int32_T;
-    } else {
-      qY = i;
-    }
-    b_qY = qY;
-    if (qY < 0) {
-      b_qY = 0;
-    }
-    if (qY > 30) {
-      nB = MAX_int32_T;
-    } else {
-      nB = static_cast<int>(1U << static_cast<unsigned int>(b_qY));
-    }
-    q1 = static_cast<int>(std::round(static_cast<double>(B) / 2.0));
-    for (int j{0}; j < nB; j++) {
-      long b_i;
-      b_i = static_cast<long>(j) * B;
-      if (b_i > 2147483647L) {
-        b_i = 2147483647L;
-      } else if (b_i < -2147483648L) {
-        b_i = -2147483648L;
+    for (int j{0}; j < i1; j++) {
+      unsigned long u;
+      int i2;
+      unsigned int u1;
+      u = static_cast<unsigned long>(j) * B;
+      if (u > 4294967295UL) {
+        u = 4294967295UL;
       }
-      if (q1 - 1 >= 0) {
-        if ((static_cast<int>(b_i) < 0) &&
-            (q1 < MIN_int32_T - static_cast<int>(b_i))) {
-          c_qY = MIN_int32_T;
-        } else if ((static_cast<int>(b_i) > 0) &&
-                   (q1 > MAX_int32_T - static_cast<int>(b_i))) {
-          c_qY = MAX_int32_T;
-        } else {
-          c_qY = static_cast<int>(b_i) + q1;
+      u1 = static_cast<unsigned int>(std::round(static_cast<double>(B) / 2.0));
+      i2 = static_cast<int>(u1);
+      for (int l{0}; l < i2; l++) {
+        unsigned int b_qY;
+        int b_x;
+        unsigned int c_qY;
+        unsigned int qY_tmp;
+        qY_tmp =
+            (static_cast<unsigned int>(u) + static_cast<unsigned int>(l)) + 1U;
+        qY = qY_tmp;
+        if (qY_tmp < static_cast<unsigned int>(u)) {
+          qY = MAX_uint32_T;
         }
-      }
-      for (int l{0}; l < q1; l++) {
-        boolean_T b;
-        b = ((static_cast<int>(b_i) < 0) &&
-             (l + 1 < MIN_int32_T - static_cast<int>(b_i)));
-        if (b) {
-          qY = MIN_int32_T;
-        } else if ((static_cast<int>(b_i) > 0) &&
-                   (l + 1 > MAX_int32_T - static_cast<int>(b_i))) {
-          qY = MAX_int32_T;
-        } else {
-          qY = (static_cast<int>(b_i) + l) + 1;
+        b_qY = static_cast<unsigned int>(u) + u1;
+        if (b_qY < static_cast<unsigned int>(u)) {
+          b_qY = MAX_uint32_T;
         }
-        if ((c_qY < 0) && (l + 1 < MIN_int32_T - c_qY)) {
-          b_qY = MIN_int32_T;
-        } else if ((c_qY > 0) && (l + 1 > MAX_int32_T - c_qY)) {
-          b_qY = MAX_int32_T;
-        } else {
-          b_qY = (c_qY + l) + 1;
+        c_qY = (b_qY + static_cast<unsigned int>(l)) + 1U;
+        if (c_qY < b_qY) {
+          c_qY = MAX_uint32_T;
         }
-        b_qY = x[qY - 1] + x[b_qY - 1];
-        if (b) {
-          qY = MIN_int32_T;
-        } else if ((static_cast<int>(b_i) > 0) &&
-                   (l + 1 > MAX_int32_T - static_cast<int>(b_i))) {
-          qY = MAX_int32_T;
-        } else {
-          qY = (static_cast<int>(b_i) + l) + 1;
+        b_x = x[static_cast<int>(qY) - 1] + x[static_cast<int>(c_qY) - 1];
+        if (qY_tmp < static_cast<unsigned int>(u)) {
+          qY_tmp = MAX_uint32_T;
         }
-        if (b_qY == 0) {
-          b_qY = 0;
+        if (b_x == 0) {
+          b_x = 0;
         } else {
-          b_qY = static_cast<int>(std::fmod(static_cast<double>(b_qY), 2.0));
+          b_x = static_cast<int>(std::fmod(static_cast<double>(b_x), 2.0));
         }
-        x[qY - 1] = (b_qY != 0.0);
+        x[static_cast<int>(qY_tmp) - 1] = (b_x != 0.0);
       }
     }
   }
