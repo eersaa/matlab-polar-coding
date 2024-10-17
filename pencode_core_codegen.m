@@ -1,11 +1,12 @@
 % PENCODE_CORE_CODEGEN   Generate static library pencode_core from pencode_core.
 % 
-% Script generated from project 'pencode_core.prj' on 16-Oct-2024.
+% Script generated from project 'pencode_core.prj' on 17-Oct-2024.
 % 
 % See also CODER, CODER.CONFIG, CODER.TYPEOF, CODEGEN.
 
 %% Create configuration object of class 'coder.EmbeddedCodeConfig'.
 cfg = coder.config('lib','ecoder',true);
+cfg.InstructionSetExtensions = "None";
 cfg.TargetLang = 'C++';
 cfg.GenerateReport = true;
 cfg.MaxIdLength = 1024;
