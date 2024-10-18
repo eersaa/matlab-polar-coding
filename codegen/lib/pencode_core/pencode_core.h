@@ -5,7 +5,7 @@
 // File: pencode_core.h
 //
 // MATLAB Coder version            : 24.1
-// C/C++ source code generated on  : 17-Oct-2024 15:41:24
+// C/C++ source code generated on  : 18-Oct-2024 13:24:02
 //
 
 #ifndef PENCODE_CORE_H
@@ -17,7 +17,7 @@
 #include <cstdlib>
 
 // Function Declarations
-extern void pencode_core(const double d[128], double n, double x[128]);
+extern void pencode_core(const boolean_T d[128], int n, boolean_T x[128]);
 
 #endif
 //

@@ -1,6 +1,6 @@
 % PENCODE_CORE_CODEGEN   Generate static library pencode_core from pencode_core.
 % 
-% Script generated from project 'pencode_core.prj' on 17-Oct-2024.
+% Script generated from project 'pencode_core.prj' on 18-Oct-2024.
 % 
 % See also CODER, CODER.CONFIG, CODER.TYPEOF, CODEGEN.
 
@@ -15,8 +15,8 @@ cfg.ReportPotentialDifferences = false;
 %% Define argument types for entry-point 'pencode_core'.
 ARGS = cell(1,1);
 ARGS{1} = cell(2,1);
-ARGS{1}{1} = coder.typeof(0,[128  1]);
-ARGS{1}{2} = coder.typeof(0);
+ARGS{1}{1} = coder.typeof(false,[128  1]);
+ARGS{1}{2} = coder.typeof(int32(0));
 
 %% Invoke MATLAB Coder.
 codegen -config cfg pencode_core -args ARGS{1}
