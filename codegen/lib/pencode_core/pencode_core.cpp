@@ -5,13 +5,11 @@
 // File: pencode_core.cpp
 //
 // MATLAB Coder version            : 24.1
-// C/C++ source code generated on  : 18-Oct-2024 13:24:02
+// C/C++ source code generated on  : 18-Oct-2024 15:36:52
 //
 
 // Include Files
 #include "pencode_core.h"
-#include <algorithm>
-#include <cmath>
 
 // Function Definitions
 //
@@ -22,103 +20,61 @@
 //
 void pencode_core(const boolean_T d[128], int n, boolean_T x[128])
 {
-  int c_qY;
-  std::copy(&d[0], &d[128], &x[0]);
+  for (int i{0}; i < 128; i++) {
+    x[i] = d[i];
+  }
   for (int i{0}; i < n; i++) {
     int B;
-    int b_qY;
+    int b;
     int nB;
-    int q1;
-    int qY;
-    if ((n >= 0) && (i + 1 < n - MAX_int32_T)) {
-      qY = MAX_int32_T;
-    } else if ((n < 0) && (i + 1 > n - MIN_int32_T)) {
-      qY = MIN_int32_T;
-    } else {
-      qY = (n - i) - 1;
-    }
-    if (qY > 2147483646) {
-      qY = MAX_int32_T;
-    } else {
-      qY++;
-    }
-    b_qY = qY;
-    if (qY < 0) {
-      b_qY = 0;
-    }
-    if (qY > 30) {
+    b = n - i;
+    if (b > 30) {
       B = MAX_int32_T;
     } else {
-      B = static_cast<int>(1U << static_cast<unsigned int>(b_qY));
+      B = static_cast<int>(1U << static_cast<unsigned int>(b));
     }
-    if (i + 1 < -2147483647) {
-      qY = MIN_int32_T;
-    } else {
-      qY = i;
-    }
-    b_qY = qY;
-    if (qY < 0) {
-      b_qY = 0;
-    }
-    if (qY > 30) {
+    if (i > 30) {
       nB = MAX_int32_T;
     } else {
-      nB = static_cast<int>(1U << static_cast<unsigned int>(b_qY));
+      nB = static_cast<int>(1U << static_cast<unsigned int>(i));
     }
-    q1 = static_cast<int>(std::round(static_cast<double>(B) / 2.0));
     for (int j{0}; j < nB; j++) {
-      long b_i;
-      b_i = static_cast<long>(j) * B;
-      if (b_i > 2147483647L) {
-        b_i = 2147483647L;
-      } else if (b_i < -2147483648L) {
-        b_i = -2147483648L;
+      int b_i;
+      int base;
+      unsigned int q;
+      unsigned int q_tmp;
+      unsigned int x_tmp;
+      base = j * B - 1;
+      if (B >= 0) {
+        x_tmp = static_cast<unsigned int>(B);
+      } else if (B == MIN_int32_T) {
+        x_tmp = 2147483648U;
+      } else {
+        x_tmp = static_cast<unsigned int>(-B);
       }
-      if (q1 - 1 >= 0) {
-        if ((static_cast<int>(b_i) < 0) &&
-            (q1 < MIN_int32_T - static_cast<int>(b_i))) {
-          c_qY = MIN_int32_T;
-        } else if ((static_cast<int>(b_i) > 0) &&
-                   (q1 > MAX_int32_T - static_cast<int>(b_i))) {
-          c_qY = MAX_int32_T;
-        } else {
-          c_qY = static_cast<int>(b_i) + q1;
-        }
+      q_tmp = x_tmp >> 1;
+      q = q_tmp;
+      x_tmp -= q_tmp << 1;
+      if (x_tmp > 0U) {
+        q = q_tmp + 1U;
       }
-      for (int l{0}; l < q1; l++) {
-        boolean_T b;
-        b = ((static_cast<int>(b_i) < 0) &&
-             (l + 1 < MIN_int32_T - static_cast<int>(b_i)));
-        if (b) {
-          qY = MIN_int32_T;
-        } else if ((static_cast<int>(b_i) > 0) &&
-                   (l + 1 > MAX_int32_T - static_cast<int>(b_i))) {
-          qY = MAX_int32_T;
-        } else {
-          qY = (static_cast<int>(b_i) + l) + 1;
+      b_i = static_cast<int>(q);
+      if (B < 0) {
+        b_i = -static_cast<int>(q);
+      }
+      for (int l{0}; l < b_i; l++) {
+        int b_x_tmp;
+        q = q_tmp;
+        if (x_tmp > 0U) {
+          q = q_tmp + 1U;
         }
-        if ((c_qY < 0) && (l + 1 < MIN_int32_T - c_qY)) {
-          b_qY = MIN_int32_T;
-        } else if ((c_qY > 0) && (l + 1 > MAX_int32_T - c_qY)) {
-          b_qY = MAX_int32_T;
-        } else {
-          b_qY = (c_qY + l) + 1;
+        b = static_cast<int>(q);
+        if (B < 0) {
+          b = -static_cast<int>(q);
         }
-        b_qY = x[qY - 1] + x[b_qY - 1];
-        if (b) {
-          qY = MIN_int32_T;
-        } else if ((static_cast<int>(b_i) > 0) &&
-                   (l + 1 > MAX_int32_T - static_cast<int>(b_i))) {
-          qY = MAX_int32_T;
-        } else {
-          qY = (static_cast<int>(b_i) + l) + 1;
-        }
-        if (b_qY == 0) {
-          b_qY = 0;
-        } else {
-          b_qY = static_cast<int>(std::fmod(static_cast<double>(b_qY), 2.0));
-        }
-        x[qY - 1] = (b_qY != 0.0);
+        b_x_tmp = (base + l) + 1;
+        b = x[b_x_tmp] + x[((base + b) + l) + 1];
+        x[b_x_tmp] = (b - ((b / 2) << 1) != 0);
       }
     }
   }

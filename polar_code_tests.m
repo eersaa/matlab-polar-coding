@@ -20,7 +20,7 @@ classdef polar_code_tests < matlab.unittest.TestCase
     end
     methods(Test)
         function should_produce_same_output_with_reference(self)
-            encoded_message = logical(pencode_core(self.message_with_frozen_bits, self.PCparams.n));
+            encoded_message = logical(pencode_core(logical(self.message_with_frozen_bits), int32(self.PCparams.n)));
 
             self.verifyEqual(encoded_message, self.ref_encoded_message)
         end
