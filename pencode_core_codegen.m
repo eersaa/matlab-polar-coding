@@ -26,9 +26,7 @@ cfg.TargetLang = 'C++';
 
 %% Define argument types for entry-point 'pencode_core'.
 ARGS = cell(1,1);
-ARGS{1} = cell(2,1);
-ARGS{1}{1} = coder.typeof(false,[128  1]);
-ARGS{1}{2} = coder.typeof(int32(0));
+ARGS{1} = coder.typeof(false,[128  1]);
 
 %% Invoke MATLAB Coder.
 codegen -config cfg pencode_core -args ARGS{1}
