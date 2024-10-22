@@ -5,7 +5,7 @@
 // File: pencode_core.h
 //
 // MATLAB Coder version            : 24.1
-// C/C++ source code generated on  : 21-Oct-2024 15:06:34
+// C/C++ source code generated on  : 22-Oct-2024 17:27:08
 //
 
 #ifndef PENCODE_CORE_H

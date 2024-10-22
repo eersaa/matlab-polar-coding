@@ -5,18 +5,11 @@
 // File: pencode_core.cpp
 //
 // MATLAB Coder version            : 24.1
-// C/C++ source code generated on  : 21-Oct-2024 15:06:34
+// C/C++ source code generated on  : 22-Oct-2024 17:27:08
 //
 
 // Include Files
 #include "pencode_core.h"
-
-// Type Definitions
-enum class defs : int
-{
-  block_length = 128, // Default value
-  stages = 7
-};
 
 // Function Definitions
 //
@@ -34,8 +27,7 @@ void pencode_core(const boolean_T d[128], boolean_T x[128])
     int nB;
     int q_tmp;
     unsigned int u;
-    B = static_cast<int>(
-        1U << static_cast<unsigned int>(static_cast<int>(defs::stages) - i));
+    B = static_cast<int>(1U << static_cast<unsigned int>(7 - i));
     nB = static_cast<int>(1U << static_cast<unsigned int>(i));
     q_tmp = static_cast<int>(static_cast<unsigned int>(B) >> 1);
     u = static_cast<unsigned int>(B) - (static_cast<unsigned int>(q_tmp) << 1);
