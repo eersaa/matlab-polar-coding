@@ -17,10 +17,9 @@ cfg.EnableSignedRightShifts = true;
 cfg.EnableVariableSizing = false;
 cfg.GenerateReport = true;
 cfg.InstructionSetExtensions = "None";
-cfg.MaxIdLength = 1024;
 cfg.PassStructByReference = true;
 cfg.PurelyIntegerCode = true;
-cfg.ReportPotentialDifferences = false;
+cfg.ReportPotentialDifferences = true;
 cfg.SaturateOnIntegerOverflow = false;
 cfg.TargetLang = 'C++';
 
