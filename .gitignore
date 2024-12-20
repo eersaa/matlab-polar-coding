@@ -4,4 +4,6 @@ codegen/lib/pencode_core/*
 !codegen/lib/pencode_core/pencode_core.cpp
 !codegen/lib/pencode_core/pencode_core.h
 
+codegen/mex/
+
 generated_code_compare
