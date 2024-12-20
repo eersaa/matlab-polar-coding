@@ -7,26 +7,19 @@
 %% Create configuration object of class 'coder.EmbeddedCodeConfig'.
 cfg = coder.config('lib','ecoder',true);
 
-cfg.CompileTimeRecursionLimit = 0;
 cfg.DataTypeReplacement = 'CBuiltIn';
-cfg.EnableDynamicMemoryAllocation = false;
-cfg.EnableMemcpy = false;
-cfg.EnableRuntimeRecursion = false;
-cfg.EnableSignedLeftShifts = true;
-cfg.EnableSignedRightShifts = true;
-cfg.EnableVariableSizing = false;
 cfg.GenerateReport = true;
 cfg.InstructionSetExtensions = "None";
 cfg.PassStructByReference = true;
-cfg.PurelyIntegerCode = true;
 cfg.ReportPotentialDifferences = true;
 cfg.SaturateOnIntegerOverflow = false;
 cfg.TargetLang = 'C++';
 
 %% Define argument types for entry-point 'pencode_core'.
 ARGS = cell(1,1);
-ARGS{1} = coder.typeof(false,[128  1]);
+ARGS{1} = coder.typeof(0,[128  1]);
 
 %% Invoke MATLAB Coder.
-codegen -config cfg pencode_core -args ARGS{1}
+codegen pencode_core -args ARGS{1} -test 'polar_code_tests' % MEX function for testing
+codegen -config cfg pencode_core -args ARGS{1} % C/C++ code generation
 
