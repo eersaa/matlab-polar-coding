@@ -5,23 +5,24 @@
 // File: pencode_core.cpp
 //
 // MATLAB Coder version            : 24.1
-// C/C++ source code generated on  : 22-Oct-2024 17:27:08
+// C/C++ source code generated on  : 20-Dec-2024 10:54:46
 //
 
 // Include Files
 #include "pencode_core.h"
+#include "rt_nonfinite.h"
+#include <algorithm>
+#include <cmath>
 
 // Function Definitions
 //
-// Arguments    : const boolean_T d[128]
-//                boolean_T x[128]
+// Arguments    : const double d[128]
+//                double x[128]
 // Return Type  : void
 //
-void pencode_core(const boolean_T d[128], boolean_T x[128])
+void pencode_core(const double d[128], double x[128])
 {
-  for (int i{0}; i < 128; i++) {
-    x[i] = d[i];
-  }
+  std::copy(&d[0], &d[128], &x[0]);
   for (int i{0}; i < 7; i++) {
     int B;
     int nB;
@@ -40,15 +41,35 @@ void pencode_core(const boolean_T d[128], boolean_T x[128])
         q = static_cast<int>(static_cast<unsigned int>(q_tmp) + 1U);
       }
       for (int l{0}; l < q; l++) {
-        int b_q;
+        double b_x;
         int x_tmp;
-        b_q = q_tmp;
+        int xi;
+        xi = q_tmp;
         if (u > 0U) {
-          b_q = static_cast<int>(static_cast<unsigned int>(q_tmp) + 1U);
+          xi = static_cast<int>(static_cast<unsigned int>(q_tmp) + 1U);
         }
         x_tmp = (base + l) + 1;
-        b_q = x[x_tmp] + x[((base + b_q) + l) + 1];
-        x[x_tmp] = (b_q - ((b_q / 2) << 1) != 0);
+        b_x = x[x_tmp] + x[((base + xi) + l) + 1];
+        xi = static_cast<int>(std::round(b_x));
+        if (xi == b_x) {
+          xi -= (xi >> 1) << 1;
+        } else {
+          double r;
+          if (std::isnan(b_x) || std::isinf(b_x)) {
+            r = rtNaN;
+          } else if (b_x == 0.0) {
+            r = 0.0;
+          } else {
+            r = std::fmod(b_x, 2.0);
+            if (r == 0.0) {
+              r = 0.0;
+            } else if (b_x < 0.0) {
+              r += 2.0;
+            }
+          }
+          xi = static_cast<int>(std::round(r));
+        }
+        x[x_tmp] = xi;
       }
     }
   }
