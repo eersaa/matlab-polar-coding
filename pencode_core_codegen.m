@@ -20,6 +20,6 @@ ARGS = cell(1,1);
 ARGS{1} = coder.typeof(0,[128  1]);
 
 %% Invoke MATLAB Coder.
-codegen pencode_core -args ARGS{1} -test 'polar_code_tests' % MEX function for testing
-codegen -config cfg pencode_core -args ARGS{1} % C/C++ code generation
+codegen pencode_core -args ARGS{1} -test 'polar_code_tests'; % MEX function for testing
+codegen -config cfg pencode_core -args ARGS{1} -package 'pencode_core'; % C/C++ code generation
 
