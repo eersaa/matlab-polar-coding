@@ -1,6 +1,7 @@
 *.txt
 
 codegen/lib/pencode_core/*
+codegen/pencode_core/hdlsrc/
 !codegen/lib/pencode_core/pencode_core.cpp
 !codegen/lib/pencode_core/pencode_core.h
 
